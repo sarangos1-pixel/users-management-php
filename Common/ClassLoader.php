@@ -79,6 +79,38 @@ final class ClassLoader
         'View' => 'Infrastructure/Entrypoints/Web/Presentation/View.php',
         'Flash' => 'Infrastructure/Entrypoints/Web/Presentation/Flash.php',
 
+        // Student· Dominio
+        'InvalidStudentIdException' => 'Domain/Exceptions/InvalidStudentIdException.php',
+        'InvalidStudentNameException' => 'Domain/Exceptions/InvalidStudentNameException.php',
+        'InvalidStudentLastNameException' => 'Domain/Exceptions/InvalidStudentLastNameException.php',
+        'InvalidStudentEmailException' => 'Domain/Exceptions/InvalidStudentEmailException.php',
+        'InvalidStudentPhoneException' => 'Domain/Exceptions/InvalidStudentPhoneException.php',
+        'InvalidStudentBirthDateException' => 'Domain/Exceptions/InvalidStudentBirthDateException.php',
+        'InvalidStudentSemesterException' => 'Domain/Exceptions/InvalidStudentSemesterException.php',
+        'InvalidStudentProgramException' => 'Domain/Exceptions/InvalidStudentProgramException.php',
+        'InvalidStudentUniversityException' => 'Domain/Exceptions/InvalidStudentUniversityException.php',
+        'InvalidStudentGenderException' => 'Domain/Exceptions/InvalidStudentGenderException.php',
+        'StudentAlreadyExistsException' => 'Domain/Exceptions/StudentAlreadyExistsException.php',
+        'StudentNotFoundException' => 'Domain/Exceptions/StudentNotFoundException.php',
+
+        'StudentGenderEnum' => 'Domain/Enums/StudentGenderEnum.php',
+
+        'StudentId' => 'Domain/ValueObjects/StudentId.php',
+        'StudentName' => 'Domain/ValueObjects/StudentName.php',
+        'StudentLastName' => 'Domain/ValueObjects/StudentLastName.php',
+        'StudentBirthDate' => 'Domain/ValueObjects/StudentBirthDate.php',
+        'StudentSemester' => 'Domain/ValueObjects/StudentSemester.php',
+        'StudentEmail' => 'Domain/ValueObjects/StudentEmail.php',
+        'StudentPhone' => 'Domain/ValueObjects/StudentPhone.php',
+        'StudentProgram' => 'Domain/ValueObjects/StudentProgram.php',
+        'StudentUniversity' => 'Domain/ValueObjects/StudentUniversity.php',
+
+        'StudentModel' => 'Domain/Models/StudentModel.php',
+
+        'StudentCreatedDomainEvent' => 'Domain/Events/StudentCreatedDomainEvent.php',
+        'StudentUpdatedDomainEvent' => 'Domain/Events/StudentUpdatedDomainEvent.php',
+        'StudentDeletedDomainEvent' => 'Domain/Events/StudentDeletedDomainEvent.php',
+
         'DependencyInjection' => 'Common/DependencyInjection.php',
     );
 
