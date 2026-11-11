@@ -111,7 +111,7 @@ final class ClassLoader
         'StudentUpdatedDomainEvent' => 'Domain/Events/StudentUpdatedDomainEvent.php',
         'StudentDeletedDomainEvent' => 'Domain/Events/StudentDeletedDomainEvent.php',
 
-        // Student. aplicacion
+        // Student  · Aplicacion
         'CreateStudentUseCase' => 'Application/Ports/In/CreateStudentUseCase.php',
         'UpdateStudentUseCase' => 'Application/Ports/In/UpdateStudentUseCase.php',
         'GetStudentByIdUseCase' => 'Application/Ports/In/GetStudentByIdUseCase.php',
@@ -137,6 +137,12 @@ final class ClassLoader
         'GetAllStudentsService' => 'Application/Services/GetAllStudentsService.php',
         'DeleteStudentService' => 'Application/Services/DeleteStudentService.php',
         'StudentApplicationMapper' => 'Application/Services/Mappers/StudentApplicationMapper.php',
+
+        // Student · Infraestructura
+        'StudentPersistenceDto' => 'Infrastructure/Adapters/Persistence/MySQL/Dto/StudentPersistenceDto.php',
+        'StudentEntity' => 'Infrastructure/Adapters/Persistence/MySQL/Entity/StudentEntity.php',
+        'StudentPersistenceMapper' => 'Infrastructure/Adapters/Persistence/MySQL/Mapper/StudentPersistenceMapper.php',
+        'StudentRepositoryMySQL' => 'Infrastructure/Adapters/Persistence/MySQL/Repository/StudentRepositoryMySQL.php',
 
         'DependencyInjection' => 'Common/DependencyInjection.php',
     );

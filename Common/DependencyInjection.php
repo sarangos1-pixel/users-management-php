@@ -156,4 +156,75 @@ final class DependencyInjection
             self::getUserRepository()
         );
     }
+
+    //  estudiante (ejercicio 1)
+
+    public static function getStudentPersistenceMapper(): StudentPersistenceMapper
+    {
+        ClassLoader::loadClass('StudentPersistenceMapper');
+
+        return new StudentPersistenceMapper();
+    }
+
+    public static function getStudentRepository(): StudentRepositoryMySQL
+    {
+        ClassLoader::loadClass('StudentRepositoryMySQL');
+
+        return new StudentRepositoryMySQL(
+            self::getPdo(),
+            self::getStudentPersistenceMapper()
+        );
+    }
+
+    public static function getCreateStudentUseCase(): CreateStudentUseCase
+    {
+        ClassLoader::loadClass('CreateStudentService');
+        $repository = self::getStudentRepository();
+
+        return new CreateStudentService(
+            $repository,
+            $repository
+        );
+    }
+
+    public static function getUpdateStudentUseCase(): UpdateStudentUseCase
+    {
+        ClassLoader::loadClass('UpdateStudentService');
+        $repository = self::getStudentRepository();
+
+        return new UpdateStudentService(
+            $repository,
+            $repository,
+            $repository
+        );
+    }
+
+    public static function getGetStudentByIdUseCase(): GetStudentByIdUseCase
+    {
+        ClassLoader::loadClass('GetStudentByIdService');
+
+        return new GetStudentByIdService(
+            self::getStudentRepository()
+        );
+    }
+
+    public static function getGetAllStudentsUseCase(): GetAllStudentsUseCase
+    {
+        ClassLoader::loadClass('GetAllStudentsService');
+
+        return new GetAllStudentsService(
+            self::getStudentRepository()
+        );
+    }
+
+    public static function getDeleteStudentUseCase(): DeleteStudentUseCase
+    {
+        ClassLoader::loadClass('DeleteStudentService');
+        $repository = self::getStudentRepository();
+
+        return new DeleteStudentService(
+            $repository,
+            $repository
+        );
+    }
 }
