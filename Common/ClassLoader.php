@@ -79,7 +79,7 @@ final class ClassLoader
         'View' => 'Infrastructure/Entrypoints/Web/Presentation/View.php',
         'Flash' => 'Infrastructure/Entrypoints/Web/Presentation/Flash.php',
 
-        // Student· Dominio
+        // Student · Dominio
         'InvalidStudentIdException' => 'Domain/Exceptions/InvalidStudentIdException.php',
         'InvalidStudentNameException' => 'Domain/Exceptions/InvalidStudentNameException.php',
         'InvalidStudentLastNameException' => 'Domain/Exceptions/InvalidStudentLastNameException.php',
@@ -110,6 +110,33 @@ final class ClassLoader
         'StudentCreatedDomainEvent' => 'Domain/Events/StudentCreatedDomainEvent.php',
         'StudentUpdatedDomainEvent' => 'Domain/Events/StudentUpdatedDomainEvent.php',
         'StudentDeletedDomainEvent' => 'Domain/Events/StudentDeletedDomainEvent.php',
+
+        // Student. aplicacion
+        'CreateStudentUseCase' => 'Application/Ports/In/CreateStudentUseCase.php',
+        'UpdateStudentUseCase' => 'Application/Ports/In/UpdateStudentUseCase.php',
+        'GetStudentByIdUseCase' => 'Application/Ports/In/GetStudentByIdUseCase.php',
+        'GetAllStudentsUseCase' => 'Application/Ports/In/GetAllStudentsUseCase.php',
+        'DeleteStudentUseCase' => 'Application/Ports/In/DeleteStudentUseCase.php',
+
+        'SaveStudentPort' => 'Application/Ports/Out/SaveStudentPort.php',
+        'UpdateStudentPort' => 'Application/Ports/Out/UpdateStudentPort.php',
+        'GetStudentByIdPort' => 'Application/Ports/Out/GetStudentByIdPort.php',
+        'GetStudentByEmailPort' => 'Application/Ports/Out/GetStudentByEmailPort.php',
+        'GetAllStudentsPort' => 'Application/Ports/Out/GetAllStudentsPort.php',
+        'DeleteStudentPort' => 'Application/Ports/Out/DeleteStudentPort.php',
+
+        'CreateStudentCommand' => 'Application/Services/Dto/Commands/CreateStudentCommand.php',
+        'UpdateStudentCommand' => 'Application/Services/Dto/Commands/UpdateStudentCommand.php',
+        'DeleteStudentCommand' => 'Application/Services/Dto/Commands/DeleteStudentCommand.php',
+        'GetStudentByIdQuery' => 'Application/Services/Dto/Queries/GetStudentByIdQuery.php',
+        'GetAllStudentsQuery' => 'Application/Services/Dto/Queries/GetAllStudentsQuery.php',
+
+        'CreateStudentService' => 'Application/Services/CreateStudentService.php',
+        'UpdateStudentService' => 'Application/Services/UpdateStudentService.php',
+        'GetStudentByIdService' => 'Application/Services/GetStudentByIdService.php',
+        'GetAllStudentsService' => 'Application/Services/GetAllStudentsService.php',
+        'DeleteStudentService' => 'Application/Services/DeleteStudentService.php',
+        'StudentApplicationMapper' => 'Application/Services/Mappers/StudentApplicationMapper.php',
 
         'DependencyInjection' => 'Common/DependencyInjection.php',
     );
