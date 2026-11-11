@@ -34,3 +34,4 @@ final class StudentUniversity
     {
         return $this->value === $other->value();
     }
+}
