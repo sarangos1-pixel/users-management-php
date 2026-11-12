@@ -157,7 +157,7 @@ final class DependencyInjection
         );
     }
 
-    //  estudiante (ejercicio 1)
+    // ── Student (ejercicio 1) ──────────────────────────────────
 
     public static function getStudentPersistenceMapper(): StudentPersistenceMapper
     {
@@ -225,6 +225,27 @@ final class DependencyInjection
         return new DeleteStudentService(
             $repository,
             $repository
+        );
+    }
+
+    public static function getStudentWebMapper(): StudentWebMapper
+    {
+        ClassLoader::loadClass('StudentWebMapper');
+
+        return new StudentWebMapper();
+    }
+
+    public static function getStudentController(): StudentController
+    {
+        ClassLoader::loadClass('StudentController');
+
+        return new StudentController(
+            self::getCreateStudentUseCase(),
+            self::getUpdateStudentUseCase(),
+            self::getGetStudentByIdUseCase(),
+            self::getGetAllStudentsUseCase(),
+            self::getDeleteStudentUseCase(),
+            self::getStudentWebMapper()
         );
     }
 }
