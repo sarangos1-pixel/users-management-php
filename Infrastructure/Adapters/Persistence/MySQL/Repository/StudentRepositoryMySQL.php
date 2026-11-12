@@ -168,3 +168,71 @@ final class StudentRepositoryMySQL implements
         $statement->execute(array(
             ':email' => $email->value(),
         ));
+
+        $row = $statement->fetch();
+
+        if ($row === false) {
+            return null;
+        }
+
+        return $this->mapper->fromRowToModel($row);
+    }
+
+    /**
+     * @return StudentModel[]
+     */
+    public function getAll(): array
+    {
+        $sql = '
+            SELECT
+                id,
+                name,
+                last_name,
+                birth_date,
+                semester,
+                email,
+                gender,
+                phone,
+                program,
+                university,
+                created_at,
+                updated_at
+            FROM students
+            ORDER BY last_name ASC, name ASC
+        ';
+
+        $statement = $this->pdo->query($sql);
+        $rows = $statement->fetchAll();
+
+        return $this->mapper->fromRowsToModels($rows);
+    }
+
+    public function delete(StudentId $studentId): void
+    {
+        $sql = 'DELETE FROM students WHERE id = :id';
+
+        $statement = $this->pdo->prepare($sql);
+        $statement->execute(array(
+            ':id' => $studentId->value(),
+        ));
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function toParameters(StudentPersistenceDto $dto): array
+    {
+        return array(
+            ':id' => $dto->id(),
+            ':name' => $dto->name(),
+            ':last_name' => $dto->lastName(),
+            ':birth_date' => $dto->birthDate(),
+            ':semester' => $dto->semester(),
+            ':email' => $dto->email(),
+            ':gender' => $dto->gender(),
+            ':phone' => $dto->phone(),
+            ':program' => $dto->program(),
+            ':university' => $dto->university(),
+        );
+    }
+}
