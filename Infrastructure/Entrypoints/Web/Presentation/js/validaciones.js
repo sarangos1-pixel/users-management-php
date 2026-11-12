@@ -2,8 +2,9 @@
  * Solicita confirmación antes de enviar un formulario de eliminación.
  *
  * El formulario debe incluir el atributo `data-name` con el nombre del
- * elemento a eliminar, por ejemplo:
- *   <form ... onsubmit="return confirmDelete(this);" data-name="Juan">
+ * elemento a eliminar y, opcionalmente, `data-entity` con el tipo de
+ * elemento (por defecto "usuario"), por ejemplo:
+ *   <form ... onsubmit="return confirmDelete(this);" data-entity="estudiante" data-name="Juan">
  *
  * @param {HTMLFormElement} form
  * @returns {boolean}
@@ -11,5 +12,6 @@
 function confirmDelete(form) {
 
     var name = form.getAttribute('data-name');
-    return confirm('¿Eliminar al usuario ' + name + '?');
+    var entity = form.getAttribute('data-entity') || 'usuario';
+    return confirm('¿Eliminar al ' + entity + ' ' + name + '?');
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-// Guardia de seguridad: bloquear acceso directo a archivos/carpetas 
+// Guardia de seguridad: bloquear acceso directo a archivos/carpetas
 // El .htaccess redirige internamente cualquier URL que no sea public/ hacia aquí.
 // Detectamos ese caso comparando la URL solicitada con la ruta pública esperada.
 
@@ -182,6 +182,103 @@ try {
             View::redirect('users.index');
             break;
 
+        //  Estudiantes (ejercicio 1)
+        case 'students.create':
+            View::render('students/create', StudentFormHelper::createViewData());
+            break;
+
+        case 'students.store':
+            $controller = DependencyInjection::getStudentController();
+            $form = StudentFormHelper::createFormData();
+            $form['id'] = generateUuid4();
+            $errors = StudentFormHelper::validate($form);
+
+            if (!empty($errors)) {
+                Flash::setOld($form);
+                Flash::setErrors($errors);
+                Flash::setMessage('Corrige los errores del formulario.');
+                View::redirect('students.create');
+            }
+
+            $request = new CreateStudentWebRequest(
+                $form['id'],
+                $form['name'],
+                $form['lastName'],
+                $form['birthDate'],
+                $form['semester'],
+                $form['email'],
+                $form['gender'],
+                $form['phone'],
+                $form['program'],
+                $form['university']
+            );
+
+            $controller->store($request);
+
+            Flash::setSuccess('Estudiante registrado correctamente.');
+            View::redirect('students.index');
+            break;
+
+        case 'students.index':
+            $controller = DependencyInjection::getStudentController();
+            $students = $controller->index();
+            View::render('students/list', StudentFormHelper::listViewData($students));
+            break;
+
+        case 'students.show':
+            $controller = DependencyInjection::getStudentController();
+            $id = isset($_GET['id']) ? trim((string) $_GET['id']) : '';
+            $student = $controller->show($id);
+            View::render('students/show', StudentFormHelper::showViewData($student));
+            break;
+
+        case 'students.edit':
+            $controller = DependencyInjection::getStudentController();
+            $id = isset($_GET['id']) ? trim((string) $_GET['id']) : '';
+            $student = $controller->show($id);
+            View::render('students/edit', StudentFormHelper::editViewData($student));
+            break;
+
+        case 'students.update':
+            $controller = DependencyInjection::getStudentController();
+            $form = StudentFormHelper::updateFormData();
+            $errors = StudentFormHelper::validate($form);
+
+            if (!empty($errors)) {
+                Flash::setOld($form);
+                Flash::setErrors($errors);
+                Flash::setMessage('Corrige los errores del formulario.');
+                header('Location: ?route=students.edit&id=' . urlencode($form['id']));
+                exit;
+            }
+
+            $request = new UpdateStudentWebRequest(
+                $form['id'],
+                $form['name'],
+                $form['lastName'],
+                $form['birthDate'],
+                $form['semester'],
+                $form['email'],
+                $form['gender'],
+                $form['phone'],
+                $form['program'],
+                $form['university']
+            );
+
+            $controller->update($request);
+
+            Flash::setSuccess('Estudiante actualizado correctamente.');
+            View::redirect('students.index');
+            break;
+
+        case 'students.delete':
+            $controller = DependencyInjection::getStudentController();
+            $id = isset($_POST['id']) ? trim((string) $_POST['id']) : '';
+            $controller->delete($id);
+            Flash::setSuccess('Estudiante eliminado correctamente.');
+            View::redirect('students.index');
+            break;
+
         case 'login':
             if (isLoggedIn()) {
                 View::redirect('home');
@@ -295,6 +392,23 @@ try {
             Flash::setOld(getUpdateUserFormData());
             header('Location: ?route=users.edit&id=' . urlencode($updateId));
             exit;
+
+        case 'students.store':
+            Flash::setOld(StudentFormHelper::createFormData());
+            View::redirect('students.create');
+            break;
+
+        case 'students.update':
+            $updateId = trim((string) ($_POST['id'] ?? ''));
+            Flash::setOld(StudentFormHelper::updateFormData());
+            header('Location: ?route=students.edit&id=' . urlencode($updateId));
+            exit;
+
+        case 'students.show':
+        case 'students.edit':
+        case 'students.delete':
+            View::redirect('students.index');
+            break;
 
         case 'auth.authenticate':
             Flash::setOld(array('email' => trim(strtolower((string) ($_POST['email'] ?? '')))));
