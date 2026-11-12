@@ -168,3 +168,4 @@ final class StudentRepositoryMySQL implements
         $statement->execute(array(
             ':email' => $email->value(),
         ));
+}
