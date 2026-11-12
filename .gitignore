@@ -16,7 +16,7 @@ php_errors.log
 .env.local
 .env.*.local
 # La plantilla SÍ se sube al repositorio
-!.env
+!.env.example
 
 
 # Base de datos — solo dumps de datos (los scripts de esquema SÍ van al repo)
