@@ -56,11 +56,11 @@ CREATE TABLE students (
                               ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---5. ESTUDIANTE DE EJEMPLO
+-- 5. ESTUDIANTE DE EJEMPLO
 INSERT INTO students (id, name, last_name, birth_date, semester, email, gender, phone, program, university)
 VALUES ('1', 'Sebastian', 'Arango', '2003-05-17', 5, 'sebastian@universidad.edu.co',
         'MALE', '3001234567', 'Ingenieria de Sistemas', 'Universidad Ejemplo');
 
---6. VERIFICACION
+-- 6. VERIFICACION
 SELECT id, name, email, role, status, created_at FROM users;
 SELECT id, name, last_name, semester, email, program FROM students;
