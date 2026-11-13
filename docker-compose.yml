@@ -1,0 +1,50 @@
+
+# CRUD Usuarios / Estudiantes - Docker Compose
+#
+#   docker compose up --build -d
+#   http://localhost:8080/public/index.php?route=auth.login
+#
+# Usuario inicial:  admin@crud.com  /  Admin12345
+
+services:
+
+  db:
+    image: mysql:8.0
+    container_name: crud_db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: crud_usuarios
+    ports:
+      # 3307 en tu PC para no chocar con el MySQL de XAMPP (3306)
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      # Solo se ejecuta la primera vez, cuando el volumen esta vacio
+      - ./Infrastructure/Adapters/Persistence/MySQL/Database/mysql/database.sql:/docker-entrypoint-initdb.d/01-database.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  app:
+    build: .
+    container_name: crud_app
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      # 8080 en tu PC para no chocar con el Apache de XAMPP (80)
+      - "8080:80"
+    environment:
+      # EnvLoader da prioridad a las variables reales del entorno
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_DATABASE: crud_usuarios
+      DB_USERNAME: root
+      DB_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+
+volumes:
+  db_data:

@@ -114,3 +114,28 @@ Aplicación web PHP para la gestión de usuarios: registro, listado, visualizaci
 
 - Credenciales fuera del código fuente y del historial de git
 
+
+## Ejecución con Docker
+
+Requisitos: Docker Desktop (incluye `docker compose`).
+
+```bash
+docker compose up --build -d
+```
+
+- Aplicación: http://localhost:8080/public/index.php?route=auth.login
+- Usuario inicial: `admin@crud.com` / `Admin12345`
+- MySQL queda disponible en `localhost:3307` (usuario `root`, clave `root` por defecto).
+- La base de datos y el usuario administrador se crean automáticamente la primera vez a partir de
+  `Infrastructure/Adapters/Persistence/MySQL/Database/mysql/database.sql`.
+
+Comandos útiles:
+
+```bash
+docker compose logs -f app      # ver logs de la aplicación
+docker compose down             # detener los contenedores (conserva los datos)
+docker compose down -v          # detener y borrar también la base de datos
+```
+
+La conexión se configura con variables de entorno (`DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`,
+`DB_PASSWORD`), que tienen prioridad sobre el archivo `.env`.
