@@ -18,9 +18,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../Common/ClassLoader.php';
 ClassLoader::register();
 
-// ---------------------------------------------------------------
 // Mini framework de pruebas
-// ---------------------------------------------------------------
 
 $passed = 0;
 $failed = 0;
@@ -57,9 +55,7 @@ function section(string $title): void
     echo "\n{$title}\n";
 }
 
-
 // Repositorio en memoria: implementa los puertos de salida
-
 
 final class InMemoryStudentRepository implements
     SaveStudentPort,
@@ -140,9 +136,7 @@ function newStudent(array $overrides = array()): StudentModel
     );
 }
 
-
 // 1. DOMINIO
-
 
 section('Dominio: modelo y normalización');
 
@@ -178,9 +172,7 @@ checkThrows('universidad vacía', InvalidStudentUniversityException::class, fn()
 checkThrows('género inválido', InvalidStudentGenderException::class, fn() => newStudent(array('gender' => 'X')));
 checkThrows('no se puede avanzar del semestre 12', InvalidStudentSemesterException::class, fn() => newStudent(array('semester' => '12'))->advanceSemester());
 
-
 // 2. APLICACIÓN (casos de uso con repositorio en memoria)
-
 
 section('Aplicación: casos de uso');
 
@@ -231,9 +223,7 @@ $delete->execute(new DeleteStudentCommand('2'));
 check('eliminar: lo quita del repositorio', count($repository->rows) === 1);
 checkThrows('eliminar: id inexistente', StudentNotFoundException::class, fn() => $delete->execute(new DeleteStudentCommand('2')));
 
-/
 // Resultado
-
 
 echo "\n----------------------------------------\n";
 echo "Pasaron: {$passed}   Fallaron: {$failed}\n";
