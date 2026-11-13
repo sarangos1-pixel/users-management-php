@@ -1,0 +1,14 @@
+# Control de versiones e IDE
+.git
+.gitignore
+.idea
+.vscode
+
+# Configuracion local: en Docker las variables llegan por compose
+.env
+
+# Archivos que no hacen falta dentro de la imagen
+Dockerfile
+docker-compose.yml
+.dockerignore
+*.md
