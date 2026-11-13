@@ -1,0 +1,144 @@
+
+# CI/CD - CRUD Usuarios / Estudiantes
+#
+# Se ejecuta en cada push y en cada Pull Request hacia main.
+#
+#   1. lint-and-test      -> revisa la sintaxis PHP y corre las pruebas
+#   2. docker-integration -> construye la imagen, levanta app + MySQL
+#                            con docker compose y prueba el flujo real
+#   3. deploy             -> solo en push a main: dispara el despliegue
+#                            en Render
+
+name: CI/CD
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main]
+
+# Si llega un push nuevo a la misma rama, cancela la ejecución anterior
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+
+  # 1. Integración: sintaxis y pruebas automáticas
+
+  lint-and-test:
+    name: Sintaxis PHP y pruebas
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Instalar PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          extensions: mbstring, pdo_mysql
+
+      - name: Revisar la sintaxis de todos los archivos PHP
+        run: |
+          status=0
+          total=0
+          for file in $(find . -name '*.php' -not -path './.git/*'); do
+            total=$((total + 1))
+            if ! php -l "$file" > lint.log 2>&1; then
+              cat lint.log
+              status=1
+            fi
+          done
+          rm -f lint.log
+          echo "Archivos PHP revisados: $total"
+          exit $status
+
+      - name: Ejecutar las pruebas del módulo Estudiante
+        run: php tests/run.php
+
+
+  # 2. Integración: Docker + flujo completo de la aplicación
+
+  docker-integration:
+    name: Docker y prueba de integración
+    needs: lint-and-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      - name: Construir la imagen y levantar app + MySQL
+        # --wait espera a que MySQL esté "healthy" antes de continuar
+        run: docker compose up -d --build --wait
+
+      - name: La pantalla de login responde
+        run: |
+          curl -fsS --retry 10 --retry-delay 3 --retry-connrefused \
+            "http://localhost:8080/public/index.php?route=auth.login" \
+            | grep -q "route=auth.authenticate"
+
+      - name: Flujo completo (login, registrar estudiante y listarlo)
+        run: |
+          BASE="http://localhost:8080/public/index.php"
+          JAR="$(mktemp)"
+
+          # 1. Iniciar sesión con el administrador base
+          curl -fsS -o /dev/null -c "$JAR" -b "$JAR" \
+            --data-urlencode "email=admin@crud.com" \
+            --data-urlencode "password=Admin12345" \
+            "$BASE?route=auth.authenticate"
+
+          # 2. Registrar un estudiante
+          curl -fsS -o /dev/null -c "$JAR" -b "$JAR" \
+            --data-urlencode "name=Sebastian" \
+            --data-urlencode "lastName=Arango" \
+            --data-urlencode "birthDate=2003-05-17" \
+            --data-urlencode "semester=5" \
+            --data-urlencode "email=ci@universidad.edu.co" \
+            --data-urlencode "gender=MALE" \
+            --data-urlencode "phone=3001234567" \
+            --data-urlencode "program=Ingenieria de Sistemas" \
+            --data-urlencode "university=Universidad Ejemplo" \
+            "$BASE?route=students.store"
+
+          # 3. El estudiante debe aparecer en el listado
+          if curl -fsS -c "$JAR" -b "$JAR" "$BASE?route=students.index" | grep -q "ci@universidad.edu.co"; then
+            echo "OK: el estudiante se registró y aparece en el listado."
+          else
+            echo "ERROR: el estudiante no aparece en el listado."
+            exit 1
+          fi
+
+      - name: Mostrar los logs si algo falló
+        if: failure()
+        run: docker compose logs --tail=100
+
+      - name: Apagar los contenedores
+        if: always()
+        run: docker compose down -v
+
+
+  # 3. Despliegue: solo cuando se hace push a main
+
+  deploy:
+    name: Despliegue en Render
+    needs: [lint-and-test, docker-integration]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Disparar el despliegue
+        env:
+          # Se configura en GitHub: Settings > Secrets and variables > Actions
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$RENDER_DEPLOY_HOOK" ]; then
+            echo "No existe el secreto RENDER_DEPLOY_HOOK: se omite el despliegue."
+            exit 0
+          fi
+          curl -fsS -X POST "$RENDER_DEPLOY_HOOK"
+          echo "Despliegue solicitado."
